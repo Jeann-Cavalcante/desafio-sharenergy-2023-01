@@ -16,7 +16,7 @@ const signUp = () => {
             </h2>
           </div>
           <form className="mt-8 space-y-6" action="#" method="POST">
-            <div className="-space-y-px rounded-md shadow-sm ">
+            <div className=" ">
               <div className="mb-6">
                 <label htmlFor="username-address" className=" pl-2">
                   Username
