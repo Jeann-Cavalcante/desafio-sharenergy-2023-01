@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { Box, Modal } from "@mui/material";
-import Image from "next/image";
+import { Modal } from "@mui/material";
 
 const status = () => {
   const [code, setCode] = useState<any>(100);

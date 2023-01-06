@@ -3,12 +3,16 @@ import { Cat, Dog, House, SignOut, Users } from "phosphor-react";
 
 const Sidebar = () => {
   return (
-    <aside className="bg-secondary relative sm:w-[200px] h-screen overflow-y-hidden text-white flex items-center flex-col w-[50px] transition-all">
+    <aside className="bg-secondary relative sm:min-w-[200px] h-screen overflow-y-hidden text-white flex items-center flex-col min-w-[50px] transition-all">
       <img
         src="https://www.sharenergy.com.br/wp-content/uploads/2017/07/cropped-symbol_color_site-192x192.png"
         alt="logo da Sharenergy"
         className="sm:w-[50px] mt-8 w-auto"
       />
+
+      <div className="mt-8 w-full px-2">
+        <hr className=" border-gray-300 " />
+      </div>
 
       <div className="flex flex-col items-center mt-8 w-full ">
         <ul className="flex flex-col items-center gap-y-2">
