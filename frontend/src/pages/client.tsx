@@ -1,13 +1,49 @@
 import { Pen, Trash } from "phosphor-react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
-import { Modal, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { canSSRAuth } from "../utils/canSSRAuth";
+import ModalClient from "../components/ModalClient";
+import { setupAPIClient } from "../services/api";
 
 const client = () => {
   const [open, setOpen] = useState(false);
+  const [clients, setClients] = useState([]);
+  const [clientEdit, setClientEdit] = useState([]);
+  const [edit, setEdit] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const apiClient = setupAPIClient();
+
+  const handleEdit = async (id: string) => {
+    const response = await apiClient.post(`/client/${id}`);
+    setClientEdit(response.data);
+    setEdit(true);
+    handleOpen();
+  };
+
+  const handleDelete = (id: string) => {
+    apiClient.delete(`/client/${id}`);
+  };
+
+  useEffect(() => {
+    async function getClients() {
+      const response = await apiClient.get("/client");
+      setClients(response.data);
+    }
+
+    getClients();
+  }, [edit, handleDelete]);
+
+  useEffect(() => {
+    setEdit(false);
+  }, [handleClose]);
+
+  function newClient () {
+    setEdit(false);
+    handleOpen()
+  }
+
   return (
     <>
       <div className="flex">
@@ -21,7 +57,7 @@ const client = () => {
               <h1 className="font-bold text-lg">Lista de clientes</h1>
 
               <button
-                onClick={handleOpen}
+                onClick={newClient}
                 className="bg-primary hover:opacity-90 duration-300 py-1 px-2 rounded-md text-white "
               >
                 Novo Cliente
@@ -31,62 +67,48 @@ const client = () => {
 
             <section>
               <ul className="overflow-x-auto flex flex-col gap-y-2">
-                <li className="flex font-semibold justify-between p-2 gap-x-2 bg-slate-50 shadow-sm">
-                  <span>Jean</span>
-                  <span>jean@teste.com</span>
-                  <span>123456789</span>
-                  <span>123456789</span>
-                  <div className="flex gap-x-2">
-                    <Trash className="cursor-pointer text-lg" />
-                    <Pen className="cursor-pointer text-lg" />
-                  </div>
-                </li>
+                {clients.map((client) => (
+                  <li
+                    key={client.id}
+                    className="flex font-semibold justify-between p-2 gap-x-2 bg-slate-50 shadow-sm"
+                  >
+                    <span>{client.name}</span>
+                    <span>{client.email}</span>
+                    <span>{client.phone}</span>
+                    <span>{client.address}</span>
+                    <span>{client.cpf}</span>
+                    <div className="flex gap-x-2">
+                      <Trash
+                        onClick={() => handleDelete(client.id)}
+                        className="cursor-pointer text-lg"
+                      />
+                      <Pen
+                        onClick={() => handleEdit(client.id)}
+                        className="cursor-pointer text-lg"
+                      />
+                    </div>
+                  </li>
+                ))}
               </ul>
             </section>
           </main>
 
-          <Modal
-            open={open}
-            onClose={handleClose}
-            className="flex justify-center items-center"
-          >
-            <div className="bg-white p-4 rounded-lg">
-              <h1 className="my-3">Formulário</h1>
-
-              <form className="flex flex-col gap-y-3">
-                <TextField
-                  id="outlined-basic"
-                  label="Nome"
-                  variant="outlined"
-                />
-
-                <TextField
-                  id="outlined-basic"
-                  label="Email"
-                  variant="outlined"
-                />
-
-                <TextField
-                  id="outlined-basic"
-                  label="Numero"
-                  variant="outlined"
-                />
-
-                <TextField id="outlined-basic" label="CPF" variant="outlined" />
-              </form>
-                
-              <button className="bg-primary hover:opacity-90 duration-300 py-1 px-2 rounded-md text-white ">
-                Salva
-              </button>
-              <button className="bg-red-600 hover:opacity-90 duration-300 py-1 px-2 rounded-md text-white ">
-                Cancelar
-              </button>
-            </div>
-          </Modal>
+          <ModalClient
+            openModal={open}
+            handleClose={handleClose}
+            handleEdit={clientEdit}
+            edit={edit}
+          />
         </div>
       </div>
     </>
   );
-}
+};
 
 export default client;
+
+export const getServerSideProps = canSSRAuth(async (ctx) => {
+  return {
+    props: {},
+  };
+});

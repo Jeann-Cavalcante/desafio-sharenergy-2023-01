@@ -1,10 +1,34 @@
-import Head from 'next/head'
-import { Inter } from '@next/font/google'
-import Link from 'next/link';
+import Head from "next/head";
+import { Inter } from "@next/font/google";
+import Link from "next/link";
+import { canSSRGuest } from "../utils/canSSRGuest";
+import { FormEvent, useContext, useState } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const { signIn } = useContext(AuthContext);
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleLogin(event: FormEvent) {
+    event.preventDefault();
+
+    if (username === "" || password === "") {
+      toast.warning("Preencha os dados");
+      return;
+    }
+
+    let data = {
+      username,
+      password,
+    };
+    await signIn(data);
+  }
+
   return (
     <>
       <Head>
@@ -28,10 +52,10 @@ export default function Home() {
               Acesse sua conta
             </h2>
           </div>
-          <form className="mt-8 space-y-6" action="#" method="POST">
+          <form className="mt-8 space-y-6" onSubmit={handleLogin}>
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="">
-              <div className='mb-6'>
+              <div className="mb-6">
                 <label htmlFor="username-address" className="pl-2">
                   Username
                 </label>
@@ -42,6 +66,8 @@ export default function Home() {
                   required
                   className="relative block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-primary focus:outline-none sm:text-sm"
                   placeholder="Entre com seu Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
               <div>
@@ -56,6 +82,8 @@ export default function Home() {
                   required
                   className="relative block w-full  rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-primary focus:outline-none sm:text-sm"
                   placeholder="Senha"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             </div>
@@ -78,7 +106,7 @@ export default function Home() {
 
               <div className="text-sm">
                 <Link
-                  href={'/signup'}
+                  href={"/signup"}
                   className="font-medium text-primary hover:text-teal-700"
                 >
                   Não possui uma conta? Cadastre-se
@@ -101,3 +129,9 @@ export default function Home() {
     </>
   );
 }
+
+export const getServerSideProps = canSSRGuest(async (ctx) => {
+  return {
+    props: {},
+  };
+});

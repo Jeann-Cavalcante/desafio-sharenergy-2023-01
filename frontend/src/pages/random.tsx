@@ -1,6 +1,7 @@
 import { ArrowsClockwise } from "phosphor-react";
 import Sidebar from "../components/Sidebar";
 import { useState } from "react";
+import { canSSRAuth } from "../utils/canSSRAuth";
 
 const random = () => {
   const [url, setUrl] = useState("");
@@ -15,7 +16,6 @@ const random = () => {
     }
 
     setUrl(data.url);
-    console.log(url);
   }
   return (
     <>
@@ -49,3 +49,9 @@ const random = () => {
 }
 
 export default random;
+
+export const getServerSideProps = canSSRAuth(async (ctx) => {
+  return {
+    props: {},
+  };
+});

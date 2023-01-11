@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Modal } from "@mui/material";
+import { canSSRAuth } from "../utils/canSSRAuth";
 
 const status = () => {
   const [code, setCode] = useState<any>(100);
@@ -134,3 +135,9 @@ const status = () => {
 }
 
 export default status;
+
+export const getServerSideProps = canSSRAuth(async () => {
+  return {
+    props: {},
+  };
+});

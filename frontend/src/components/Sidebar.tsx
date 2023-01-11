@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { Cat, Dog, House, SignOut, Users } from "phosphor-react";
+import { signOut } from "../contexts/AuthContext";
 
 const Sidebar = () => {
+  async function handleSignOut () {
+    await signOut()
+  }
   return (
     <aside className="bg-secondary relative sm:min-w-[200px] h-screen overflow-y-hidden text-white flex items-center flex-col min-w-[50px] transition-all">
       <img
@@ -18,7 +22,7 @@ const Sidebar = () => {
         <ul className="flex flex-col items-center gap-y-2">
           <li className="flex items-center mt-1 sm:w-[130px] sm:pl-3 rounded-md sm:py-1 p-1 duration-300 hover:bg-primary">
             <Link
-              href={""}
+              href={"/home"}
               className=" flex gap-x-2 justify-center items-center"
             >
               <House size={28} weight="bold" />
@@ -30,7 +34,7 @@ const Sidebar = () => {
 
           <li className="flex items-center mt-1 sm:w-[130px]  sm:pl-3 rounded-md sm:py-1 p-1 duration-300 hover:bg-primary">
             <Link
-              href={""}
+              href={'/status'}
               className=" flex gap-x-2 justify-center items-center"
             >
               <Cat size={24} weight="bold" />
@@ -42,7 +46,7 @@ const Sidebar = () => {
 
           <li className="flex items-center mt-1 sm:w-[130px] sm:pl-3 rounded-md sm:py-1 p-1 duration-300 hover:bg-primary">
             <Link
-              href={""}
+              href={"random"}
               className=" flex gap-x-2 justify-center items-center"
             >
               <Dog size={24} weight="bold" />
@@ -54,7 +58,7 @@ const Sidebar = () => {
 
           <li className="flex items-center mt-1 sm:w-[130px] sm:pl-3 rounded-md sm:py-1 p-1 duration-300 hover:bg-primary">
             <Link
-              href={""}
+              href={"client"}
               className=" flex gap-x-2 justify-center items-center"
             >
               <Users size={24} weight="bold" />
@@ -67,7 +71,7 @@ const Sidebar = () => {
       </div>
 
       <footer className="flex w-full pl-4 absolute bottom-3">
-        <Link href={""} className="flex gap-x-2">
+        <Link href={"/"} onClick={handleSignOut} className="flex gap-x-2">
           <SignOut size={24} weight="bold" />
           <span className="text-sm font-bold sr-only sm:not-sr-only">Sair</span>
         </Link>

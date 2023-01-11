@@ -1,6 +1,36 @@
 import Link from "next/link";
+import { canSSRGuest } from "../utils/canSSRGuest";
+import { FormEvent, useContext, useState } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 const signUp = () => {
+
+   const { signUp } = useContext(AuthContext);
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  async function handleSignUp(event: FormEvent) {
+    event.preventDefault();
+
+    if (username === "" || password === "") {
+      toast.warning("Preencha os dados");
+      return;
+    }
+
+    setLoading(true);
+
+    let data = {
+      username,
+      password,
+    };
+    await signUp(data);
+    setLoading(false);
+  }
+
   return (
     <>
       <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -15,7 +45,7 @@ const signUp = () => {
               Faça seu cadastro
             </h2>
           </div>
-          <form className="mt-8 space-y-6" action="#" method="POST">
+          <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
             <div className=" ">
               <div className="mb-6">
                 <label htmlFor="username-address" className=" pl-2">
@@ -28,6 +58,8 @@ const signUp = () => {
                   required
                   className="relative block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-primary focus:outline-none sm:text-sm"
                   placeholder="Crie um username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
               <div>
@@ -41,6 +73,8 @@ const signUp = () => {
                   required
                   className="relative block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-primary focus:outline-none sm:text-sm"
                   placeholder="Crie uma senha"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             </div>
@@ -73,3 +107,10 @@ const signUp = () => {
 }
 
 export default signUp;
+
+
+export const getServerSideProps = canSSRGuest(async (ctx) => {
+  return {
+    props: {},
+  };
+});
